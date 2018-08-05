@@ -48,9 +48,9 @@ def localize(colors,measurements,motions,sensor_right,p_move):
     pinit = 1.0 / float(len(colors)) / float(len(colors[0]))
     p = [[pinit for row in range(len(colors[0]))] for col in range(len(colors))] 
     # >>> Insert your code here <<<
-    for i in range(len(measurements)):
-      p = sense(p, colors, measurements[i], sensor_right)
+    for i in range(len(measurements)):  
       p = move(p, colors, motions[i], p_move)
+      p = sense(p, colors, measurements[i], sensor_right)
     return p
 
 def sense(p, colors, correct_measure, sensor_right):
@@ -62,34 +62,27 @@ def sense(p, colors, correct_measure, sensor_right):
         q[i].append(p[i][j] * (hit * (sensor_right) + (1 - hit) * (1 - sensor_right)))
     s = sum(map(sum,q))
     for i in range(len(p)):
-      for j in range(len(p)):
+      for j in range(len(p[0])):
         q[i][j] = q[i][j] / s 
     return q
 
 def move(p, colors, current_motions, p_move):
-  for i in range(len(p) - 1) :
-    for j in range(len(p[0]) - 1):
-        p[i][j + current_motions[1]] += p_move * p[i][j]
-        p[i + current_motions[0]][j] += p_move * p[i][j]   
-  return p
+  q = []
+  for i in range(len(p)):
+    q.append([])
+    for j in range(len(p[0])):
+      q[i].append([])
+
+  for i in range(len(p)) :
+    for j in range(len(p[0])):
+        q[i][j] = ((1 - p_move) * p[i][j]) + p_move * (p[(i - current_motions[0]) % len(p)][(j - current_motions[1]) % len(p[0])]) 
+  return q
 
 def show(p):
     rows = ['[' + ','.join(map(lambda x: '{0:.5f}'.format(x),r)) + ']' for r in p]
     print '[' + ',\n '.join(rows) + ']'
 
-colors = [['G', 'G', 'G'],
-          ['G', 'R', 'R'],
-          ['G', 'G', 'G']]
-measurements = ['R', 'R']
-motions = [[0,0], [0,1]]
-sensor_right = 0.8
-p_move = 1.0
-p = localize(colors,measurements,motions,sensor_right,p_move)
-correct_answer = (
-    [[0.03333333333, 0.03333333333, 0.03333333333],
-     [0.13333333333, 0.13333333333, 0.53333333333],
-     [0.03333333333, 0.03333333333, 0.03333333333]])
-show(p)
+
 #############################################################
 # For the following test case, your output should be 
 # [[0.01105, 0.02464, 0.06799, 0.04472, 0.02465],
@@ -98,11 +91,11 @@ show(p)
 #  [0.00910, 0.00715, 0.01434, 0.04313, 0.03642]]
 # (within a tolerance of +/- 0.001 for each entry)
 
-'''colors = [['R','G','G','R','R'],
+colors = [['R','G','G','R','R'],
           ['R','R','G','R','R'],
           ['R','R','G','G','R'],
           ['R','R','R','R','R']]
 measurements = ['G','G','G','G','G']
 motions = [[0,0],[0,1],[1,0],[1,0],[0,1]]
 p = localize(colors,measurements,motions,sensor_right = 0.7, p_move = 0.8)
-show(p) # displays your answer'''
+show(p) # displays your answer
