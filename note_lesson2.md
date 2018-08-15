@@ -4,7 +4,7 @@
 - Purpose: state estimation(which is important in localization)
 - Comparison:
     + Kalman Filter: continuous/uni-modal
-    + Monte Carlo Localization: discrete model, multi-modal
+    + Monte Carlo Localization: discrete/multi-modal
     + Particue Filer: continuous/multi-modal
         - Uni-modal: one peak
 - Representation: Guassian Distribution    
@@ -59,4 +59,9 @@ print [mu, sig]
 ```
 
 ## Concept Review
-**Update Measurement** and **Predict Motion**
+**Update Measurement/Observation** and **Predict Motion/Estimation**
+
+## Related Resource
+#### Video
+- [Understanding Kalman Filters](https://www.youtube.com/watch?v=mwn8xhgNpFY&list=PLn8PRpmsu08pzi6EMiYnR-076Mh-q3tWr) by MATLAB
+- [Control Bootcamp: Kalman Filter](https://www.youtube.com/watch?v=s_9InuQAx-g)
