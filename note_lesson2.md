@@ -21,11 +21,24 @@
 - position and velocity
     + using observable parameter (position) to estimate hidden parameter
     + x' = x + delta(t) v'
-- Design Criteria:
-    + state transition matrix
-    + measurement function matrix
+- Parameter:
+    + x: initial state
+    + u: external motion
+    + B: scale of external works on state
+    + P: initial uncertainty
+    + z: measurement
+    + F: next state function
+    + R: measurement uncertainty
+    + H: measurement function
 - UPDATE!!!!!!!!!!
     + *know-how*
+        1. Estimate current state based on previous state and gyro measurements
+        2. Predict priori error covariance matrix, based on previous matrix and noise.
+        3. Collect observation data(innovation)   
+        4. Compute the difference between observation data and predict state
+        5. Get Kalman gain (innovation matrix covariance determines the reliability of data, the higher the covariance the bigger kalman gain)
+        6. Update estimated data for current state
+        7. Update the priori error covarianc matrix
         
 ## Programming Work:A Real Simple 1-D Kalman Filter
 ```python
