@@ -19,9 +19,8 @@
 grid = [[0, 0, 1, 0, 0, 0],
         [0, 0, 0, 0, 0, 0],
         [0, 0, 1, 0, 1, 0],
-        [0, 0, 0, 1, 1, 0],
-        [0, 0, 0, 0, 1, 0]]
-
+        [0, 0, 1, 0, 1, 0],
+        [0, 0, 1, 0, 1, 0]]
 init = [0, 0]
 goal = [len(grid)-1, len(grid[0])-1]
 cost = 1
@@ -33,6 +32,7 @@ delta = [[-1, 0], # go up
 
 delta_name = ['^', '<', 'v', '>']
 
+# check condition correct and get position after movement
 def move(pos, delta, grid):
     new_pos = [0,0,0]
     new_pos[0] = pos[0] + 1 
@@ -42,6 +42,7 @@ def move(pos, delta, grid):
         if grid[new_pos[1]][new_pos[2]] == 0: # check new point don't touch the wall
             return new_pos
 
+# position to begin the recursion
 def priority(openlist):
     min_value = 0;
     min_index = 0;
@@ -51,7 +52,9 @@ def priority(openlist):
             min_index = i 
     return openlist[min_index]
 
+# to check if new position is in the checklist or not
 def inChecklist(checklist, newpos):
+    # easier to check if newpos in the list or not
     if newpos[1:3] in checklist:
         return True
     else:
@@ -64,9 +67,13 @@ def search(grid,init,goal,cost):
     cur_pos = [0, 0, 0]
     openlist =[]
     openlist.append(cur_pos)
+    # checklist only include x_cor and y_cor
     checklist = []
     checklist.append(cur_pos[1:3])
     found = 0
+    expand = [[-1 for x in range(len(grid[0]))] for y in range(len(grid))]
+    step = 0
+    # using a while loop to iterate to search for path
     while openlist:
         for i in range(len(delta)):
             cur_pos = priority(openlist)
@@ -78,10 +85,14 @@ def search(grid,init,goal,cost):
                     path = new_pos
                 if new_pos not in openlist:
                     openlist.append(new_pos)        
+        # set expand step value heare
+        expand[cur_pos[1]][cur_pos[2]] = step
+        step += 1
         openlist.remove(cur_pos)
+    # return fail if unable to find the path
     if found == 0:
         path = "fail"
-    return path
+    return expand
 
-path = search(grid,init,goal,cost)
-print path
+expand = search(grid,init,goal,cost)
+print expand
