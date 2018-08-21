@@ -20,7 +20,7 @@
   > h(n): prediction distance of current node and goal  
   > f(n): weight of current node  
   > heuristic funciton may differs from cases
-  
+
 ## Dijkstra Algorithm
 - Purpose: To find the shortest path from starting point to goal
 - Principle: 
@@ -30,6 +30,11 @@
   > min(d(a) + w(a)(b))  
   > d(a): shortest path from starting point to point a  
   > w(a)(b): distance(weight) between a and b  
+
+## Dynamic Programming
+- Setting problem into subsystem, and optimize result in each system comes to the best solution at the end of process
+    + Given: map, goal
+    + output: best path for ANYWHERE
 
 ## Related Resource
 #### Reading Material
