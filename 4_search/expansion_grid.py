@@ -44,8 +44,8 @@ def move(pos, delta, grid):
 
 # position to begin the recursion
 def priority(openlist):
-    min_value = 0;
-    min_index = 0;
+    min_value = 0
+    min_index = 0
     for i in range(len(openlist)):
         if openlist[i][0] < min_value:
             min_value = openlist[i][0]
@@ -95,4 +95,4 @@ def search(grid,init,goal,cost):
     return expand
 
 expand = search(grid,init,goal,cost)
-print expand
+print (expand)

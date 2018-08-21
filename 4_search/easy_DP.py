@@ -11,8 +11,8 @@
 
 grid = [[0, 1, 0, 0, 0, 0],
         [0, 1, 0, 0, 0, 0],
-        [0, 1, 0, 0, 1, 0],
-        [0, 1, 0, 0, 1, 0],
+        [0, 1, 0, 0, 0, 0],
+        [0, 1, 0, 0, 0, 0],
         [0, 0, 0, 0, 1, 0]]
 goal = [len(grid)-1, len(grid[0])-1]
 cost = 1 # the cost associated with moving from a cell to an adjacent one
@@ -25,7 +25,6 @@ delta = [[-1, 0 ], # go up
 delta_name = ['^', '<', 'v', '>']
 
 def recursive(x, y, current_value, value):
-
     openlist = []
     for i in range(len(delta)):
         x2 = x - delta[i][0]
@@ -37,6 +36,7 @@ def recursive(x, y, current_value, value):
                     openlist.append([x2, y2])
     for i in range(len(openlist)):
         recursive(openlist[i][0], openlist[i][1], current_value + 1, value)
+    return
 
 def compute_value(grid,goal,cost):
     # ----------------------------------------
