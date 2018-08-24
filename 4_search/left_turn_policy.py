@@ -26,7 +26,8 @@ action_name = ['R', '#', 'L']
 # EXAMPLE INPUTS:
 # grid format:
 #     0 = navigable space
-#     1 = unnavigable space 
+#     1 = unnavigable space
+'''
 grid = [[1, 1, 1, 0, 0, 0],
         [1, 1, 1, 0, 1, 0],
         [0, 0, 0, 0, 0, 0],
@@ -43,6 +44,15 @@ goal = [2, 0] # given in the form [row,col]
 
 cost = [2, 1, 20] # cost has 3 values, corresponding to making 
                   # a right turn, no turn, and a left turn
+'''
+grid = [[0, 0, 0, 0, 1, 1],
+        [0, 0, 1, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0],
+        [0, 0, 1, 1, 1, 0],
+        [0, 0, 0, 0, 1, 0]]
+init = [4, 5, 0]
+goal = [4, 3]
+cost = [1, 1, 1]
 
 # EXAMPLE OUTPUT:
 # calling optimum_policy2D with the given parameters should return 
@@ -58,43 +68,68 @@ cost = [2, 1, 20] # cost has 3 values, corresponding to making
 # ----------------------------------------
 
 def optimum_policy2D(grid,init,goal,cost):
-    closed = [[0 for row in range(len(grid[0]))] for col in range(len(grid))]
-    closed[init[0]][init[1]] = 1
-  
+    value = [[[999 for row in range(len(grid[0]))] for col in range(len(grid))] for dir in range(len(forward))]
+
     x = init[0]
     y = init[1]
     d = init[2]
     g = 0
 
-    open = [[g, x, y, d]]
-
-    found = False  # flag that is set when search is complete
-    resign = False # flag set if we can't find expand
-
+    open = [[g, d, x, y]]
+    #value[d][x][y] = 0
+    found = False
+    
     policy2D = [[' ' for col in range(len(grid[0]))] for row in range(len(grid))]
-    while not found and not resign:
-        if len(open) == 0:
-            resign = True
-            return 'fail'
-        else:
-            open.sort()
-            open.reverse()
-            next = open.pop()
-            x = next[1]
-            y = next[2]
-            d = next[3]
-            g = next[0]
-            
-            if x == goal[0] and y == goal[1]:
-                expand[x][y] = '*'
-                found = True
-            else:
-                for i in range(len(action)):
-                    x2 = x + delta[i][0]
-                    y2 = y + delta[i][1]
-                    if x2 >= 0 and x2 < len(grid) and y2 >=0 and y2 < len(grid[0]):
-                        if closed[x2][y2] == 0 and grid[x2][y2] == 0:
-                            g2 = g + cost
-                            open.append([g2, x2, y2])
-                            closed[x2][y2] = 1
+    policy3D = [[[' ' for row in range(len(grid[0]))] for col in range(len(grid))] for dir in range(len(forward))]
+
+    while not found:
+
+        open.sort()
+        open.reverse()
+        next = open.pop()
+        x = next[2]
+        y = next[3]
+        d = next[1]
+        g = next[0]
+        
+        if x == goal[0] and y == goal[1]:
+            value[d][x][y] = g + 1
+            policy2D[x][y] = '*'
+            found = True
+        elif grid[x][y] == 0:
+            for rel_dir in range(len(action)):                   
+                d2 = (d + action[rel_dir]) % 4
+                x2 = x + forward[d2][0]
+                y2 = y + forward[d2][1]
+                if x2 >= 0 and x2 < len(grid) and y2 >=0 and y2 < len(grid[0]):
+                    if grid[x2][y2] == 0:
+                        g2 = g + cost[rel_dir]
+                        open.append([g2, d2, x2, y2])                     
+                        if g2 < value[d][x][y]:
+                            value[d][x][y] = g2
+                            policy3D[d][x][y] = action_name[rel_dir]
+
+     # recursive to get direction from starting position
+
+    count = 0
+    x = init[0]
+    y = init[1]
+    d = init[2]
+
+    while count < g:
+        policy2D[x][y] = policy3D[d][x][y]
+        here = policy2D[x][y] 
+        if here in action_name:
+            direction = action_name.index(here)
+            d = (d + action[direction]) % 4
+            x += forward[d][0]
+            y += forward[d][1]
+        count += 1
+    
+    policy2D[goal[0]][goal[1]] = '*'
     return policy2D
+
+
+
+policy2D = optimum_policy2D(grid,init,goal,cost)
+print policy2D
