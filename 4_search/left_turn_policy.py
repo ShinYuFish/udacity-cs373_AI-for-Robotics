@@ -45,14 +45,16 @@ goal = [2, 0] # given in the form [row,col]
 cost = [2, 1, 20] # cost has 3 values, corresponding to making 
                   # a right turn, no turn, and a left turn
 '''
-grid = [[0, 0, 0, 0, 1, 1],
-        [0, 0, 1, 0, 0, 0],
-        [0, 0, 0, 0, 1, 0],
-        [0, 0, 1, 1, 1, 0],
-        [0, 0, 0, 0, 1, 0]]
-init = [4, 5, 0]
-goal = [4, 3]
-cost = [1, 1, 1]
+grid = [[0, 0, 0, 0, 0, 0, 0],
+        [1, 1, 1, 1, 1, 1, 0],
+        [0, 1, 0, 0, 0, 1, 0],
+        [0, 1, 0, 1, 0, 1, 0],
+        [0, 1, 0, 1, 0, 0, 0],
+        [0, 1, 1, 1, 1, 1, 0],
+        [0, 0, 0, 0, 0, 0, 0]]
+init = [0, 0, 3]
+goal = [4, 2]
+cost = [10, 40, 65]
 
 # EXAMPLE OUTPUT:
 # calling optimum_policy2D with the given parameters should return 
@@ -66,6 +68,26 @@ cost = [1, 1, 1]
 # ----------------------------------------
 # modify code below
 # ----------------------------------------
+# def back_propagation(x, y, d, value):
+#     min_value = 1000
+#     min_x = init[0]
+#     min_y = init[1]
+#     min_d = init[2]
+#     prev_value = value[d][x][y]
+#     for i in range(len(forward)):
+#         x2 = x + forward[i][0]
+#         y2 = y + forward[i][1]
+#         if x2 >= 0 and x2 < len(grid) and y2 >=0 and y2 < len(grid[0]) and grid[x2][y2] == 0:
+#             for n in range(len(action)):
+#                 d2 = (d + action[n]) % 4
+#                 for c in range(len(cost)):
+#                     if value[d2][x2][y2] == prev_value - cost[c]:
+#                         if min_value > value[d2][x2][y2]:                            
+#                             min_value = value[d2][x2][y2]   
+#                             min_x = x2
+#                             min_y = y2
+#                             min_d = d2
+#     return min_x, min_y, min_d
 
 def optimum_policy2D(grid,init,goal,cost):
     value = [[[999 for row in range(len(grid[0]))] for col in range(len(grid))] for dir in range(len(forward))]
@@ -80,10 +102,8 @@ def optimum_policy2D(grid,init,goal,cost):
     found = False
     
     policy2D = [[' ' for col in range(len(grid[0]))] for row in range(len(grid))]
-    policy3D = [[[' ' for row in range(len(grid[0]))] for col in range(len(grid))] for dir in range(len(forward))]
 
     while not found:
-
         open.sort()
         open.reverse()
         next = open.pop()
@@ -93,7 +113,7 @@ def optimum_policy2D(grid,init,goal,cost):
         g = next[0]
         
         if x == goal[0] and y == goal[1]:
-            value[d][x][y] = g + 1
+            value[d][x][y] = g + cost[0]
             policy2D[x][y] = '*'
             found = True
         elif grid[x][y] == 0:
@@ -107,28 +127,48 @@ def optimum_policy2D(grid,init,goal,cost):
                         open.append([g2, d2, x2, y2])                     
                         if g2 < value[d][x][y]:
                             value[d][x][y] = g2
-                            policy3D[d][x][y] = action_name[rel_dir]
 
      # recursive to get direction from starting position
 
     count = 0
-    x = init[0]
-    y = init[1]
-    d = init[2]
 
     while count < g:
-        policy2D[x][y] = policy3D[d][x][y]
-        here = policy2D[x][y] 
-        if here in action_name:
-            direction = action_name.index(here)
-            d = (d + action[direction]) % 4
-            x += forward[d][0]
-            y += forward[d][1]
+        min_value = 1000
+        prev_value = value[d][x][y]
+        min_d = init[2]
+        min_x = init[0]
+        min_y = init[1]
+        # back propagation
+        for i in range(len(forward)):
+            x2 = x + forward[i][0]
+            y2 = y + forward[i][1]
+            if x2 >= 0 and x2 < len(grid) and y2 >=0 and y2 < len(grid[0]) and grid[x2][y2] == 0:
+                for n in range(len(action)):
+                    d2 = (d + action[n]) % 4
+                    for c in range(len(cost)):
+                        if value[d2][x2][y2] == prev_value - cost[c]:
+                            if min_value > value[d2][x2][y2]:                            
+                                min_value = value[d2][x2][y2]   
+                                min_x = x2
+                                min_y = y2
+                                min_d = d2
+        if min_x == goal[0] and min_y == goal[1]:
+            break
+        if (d - min_d) in action:
+            #print d - min_d
+            direction = action.index(d - min_d)
+            policy2D[min_x][min_y] = action_name[direction]
+        elif d - min_d == 3:
+            policy2D[min_x][min_y] = 'R'
+        elif d - min_d == -3:
+            policy2D[min_x][min_y] = 'L'
         count += 1
+        x = min_x
+        y = min_y
+        d = min_d
     
     policy2D[goal[0]][goal[1]] = '*'
     return policy2D
-
 
 
 policy2D = optimum_policy2D(grid,init,goal,cost)
