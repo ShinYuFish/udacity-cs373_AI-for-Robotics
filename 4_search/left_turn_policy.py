@@ -139,12 +139,14 @@ def optimum_policy2D(grid,init,goal,cost):
         min_x = init[0]
         min_y = init[1]
         # back propagation
+        # look for the minimum value point throughout 4 direction and 3 layer
         for i in range(len(forward)):
             x2 = x + forward[i][0]
             y2 = y + forward[i][1]
             if x2 >= 0 and x2 < len(grid) and y2 >=0 and y2 < len(grid[0]) and grid[x2][y2] == 0:
                 for n in range(len(action)):
                     d2 = (d + action[n]) % 4
+                    # using cost to check if path continuous or not
                     for c in range(len(cost)):
                         if value[d2][x2][y2] == prev_value - cost[c]:
                             if min_value > value[d2][x2][y2]:                            
@@ -154,6 +156,7 @@ def optimum_policy2D(grid,init,goal,cost):
                                 min_d = d2
         if min_x == goal[0] and min_y == goal[1]:
             break
+        # using layer difference to get turning action name
         if (d - min_d) in action:
             #print d - min_d
             direction = action.index(d - min_d)
