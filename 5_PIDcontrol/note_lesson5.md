@@ -10,6 +10,8 @@
 
 
 ## PID Control
-- P for Proportional
+- P:Proportional
     + Overshoot, oscillating around target state
     + marginally stable
+- D:Differential
+- I:Integral
