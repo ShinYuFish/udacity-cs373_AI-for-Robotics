@@ -15,3 +15,5 @@
     + marginally stable
 - D:Differential
 - I:Integral
+- TWIDDLE: Coordinate Ascent
+    - Optimize PID gain
