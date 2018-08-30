@@ -50,5 +50,4 @@
 #### Reading Material
 - [wiki](https://en.wikipedia.org/wiki/Particle_filter)
 - [Particle Filters in Robotics](http://robots.stanford.edu/papers/thrun.pf-in-robotics-uai02.pdf)
-- [A Tutorial on Particle Filters for Online
-Nonlinear/Non-Gaussian Bayesian Tracking](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.117.1144&rep=rep1&type=pdf)
+- [A Tutorial on Particle Filters for Online Nonlinear/Non-Gaussian Bayesian Tracking](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.117.1144&rep=rep1&type=pdf)
