@@ -27,6 +27,7 @@
 # it is not.
 
 from math import *
+from copy import deepcopy
 
 # Do not modify path inside your function.
 path=[[0, 0], 
@@ -57,11 +58,21 @@ path=[[0, 0],
 #
 
 def smooth(path, weight_data = 0.1, weight_smooth = 0.1, tolerance = 0.00001):
-
+    
+    newpath = deepcopy(path)
     # 
     # Enter code here
     #
-    
+    converge = 100
+    while converge >= tolerance:
+        converge  = 0.0
+        for i in range(0, len(path)):
+            for j in range(len(path[0])):
+                before = newpath[i][j]
+                newpath[i][j] += weight_data * (path[i][j] - newpath[i][j]) + \
+                weight_smooth * (newpath[(i-1)%len(path)][j] + newpath[(i+1)%len(path)][j] - 2.0 * newpath[i][j])
+                converge += abs(before - newpath[i][j])
+
     return newpath
 
 # thank you - EnTerr - for posting this on our discussion forum
@@ -181,5 +192,5 @@ answer2 = [[1.2222234770374059, 0.4444422843711052],
            [0.44444210978390364, 1.2222211690821811], 
            [0.8888882042812255, 0.8888870211766268]]
 
-# solution_check(smooth(testpath1), answer1)
-# solution_check(smooth(testpath2), answer2)
+#solution_check(smooth(testpath1), answer1)
+#solution_check(smooth(testpath2), answer2)
