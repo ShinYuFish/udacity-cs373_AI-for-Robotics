@@ -587,8 +587,9 @@ def online_slam(data, N, num_landmarks, motion_noise, measurement_noise):
         motion = data[iter][1]    
                 
         # Omega Xi value update from t -> t + 1
-        Omega = Omega.expand(dim + 2, dim + 2, [0, 1, 4, 5, 6, 7, 8, 9], [0, 1, 4, 5, 6, 7, 8, 9])
-        Xi = Xi.expand(dim + 2, 1, [0, 1, 4, 5, 6, 7, 8, 9], [0])
+        dim_expand = [0, 1] + range(4, dim + 2)
+        Omega = Omega.expand(dim + 2, dim + 2, dim_expand, dim_expand)
+        Xi = Xi.expand(dim + 2, 1, dim_expand, [0])
         for m in range(len(measurement)):
             landmark_index = measurement[m][0]
             insert_index = 2 * (2 + landmark_index)
@@ -610,6 +611,7 @@ def online_slam(data, N, num_landmarks, motion_noise, measurement_noise):
                 Omega.value[0 + i][0 + i - 2] -= 1.0 / motion_noise
                 Xi.value[0 + i][0] += motion[i % 2] / motion_noise
 
+        dim_take = range
         pOmega = Omega.take([2, 3, 4, 5, 6, 7, 8, 9], [2, 3, 4, 5, 6, 7, 8, 9])
         pXi = Xi.take([2, 3, 4, 5, 6, 7, 8, 9], [0])
         A = Omega.take([0, 1], [2, 3, 4, 5, 6, 7, 8, 9])
