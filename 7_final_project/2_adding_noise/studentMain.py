@@ -43,8 +43,53 @@ def estimate_next_pos(measurement, OTHER = None):
 
     # You must return xy_estimate (x, y), and OTHER (even if it is None) 
     # in this order for grading purposes.
-    xy_estimate = (3.2, 9.1)
-    return xy_estimate, OTHER
+    # OTHER = [estimate_xy_t-1, heading, turning, distance, p]
+    # if not OTHER:
+    #     OTHER = [measurement, 0, 0, 0, 1]    
+    
+    # #---------------------------PREDICT---------------------------------#
+    # # use the guess robot to get the estimation position
+    
+    # distance = distance_between(measurement, OTHER[0])
+    # heading = atan2(measurement[1] - OTHER[0][1], measurement[0] - OTHER[0][0])
+    # # if measurement[1] - OTHER[0][1] < 0 :
+    # #     if measurement[0] - OTHER[0][0] > 0:
+    # #         heading += pi
+    # #     else:
+    # #         heading -= pi
+    # turning = heading - OTHER[2]
+
+    # guess_robot = robot(OTHER[0][0], OTHER[0][1], heading, turning ,distance,)
+    # guess_robot.move(guess_robot.turning, guess_robot.distance)
+    # predict_xy = (guess_robot.x, guess_robot.y)
+
+    # #---------------------------UPDATE----------------------------------#
+    # xhat = matrix([[predict_xy[0]], [predict_xy[1]]])
+    # measurement = matrix([[measurement[0]], [measurement[0]]])
+    # p = OTHER[4]
+    # r = 1.0
+    # g = p / (p + r)
+    # xhat = xhat + (measurement - xhat) * matrix([[g]])
+    # p = (1 - g) * p;
+
+    # xy_estimate = (xhat.value[0][0], xhat.value[1][0])
+    # OTHER = [xy_estimate, heading, turning, distance, n]
+    if not OTHER:
+        OTHER = [measurement, 0, 0, 0, 1]    
+    
+    n = OTHER[4]
+    local_distance = distance_between(measurement, OTHER[0])
+    avg_distance = (local_distance + OTHER[3] * n) / (n + 1)
+    heading = atan2(measurement[1] - OTHER[0][1], measurement[0] - OTHER[0][0])
+    local_turning = heading - OTHER[2]
+    avg_turning = (local_turning + OTHER[2] * n) / (n + 1)
+    OTHER = [measurement, heading, avg_turning, avg_distance, n+1]
+
+    guess_robot = robot(measurement[0], measurement[1], heading, avg_turning, avg_distance)
+    guess_robot.move(guess_robot.turning, guess_robot.distance)
+    xy_estimate = (guess_robot.x, guess_robot.y)
+    return xy_estimate, OTHER 
+
 
 # A helper function you may find useful.
 def distance_between(point1, point2):
@@ -93,7 +138,7 @@ test_target = robot(2.1, 4.3, 0.5, 2*pi / 34.0, 1.5)
 measurement_noise = 0.05 * test_target.distance
 test_target.set_noise(0.0, 0.0, measurement_noise)
 
-demo_grading(naive_next_pos, test_target)
+demo_grading(estimate_next_pos, test_target)
 
 
 
