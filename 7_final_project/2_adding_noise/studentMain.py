@@ -73,7 +73,7 @@ def estimate_next_pos(measurement, OTHER = None):
     # p = (1 - g) * p;
 
     # xy_estimate = (xhat.value[0][0], xhat.value[1][0])
-    # OTHER = [xy_estimate, heading, turning, distance, n]
+    # OTHER = [xy_estimate, heading, turning, distance, measurement_num]
     if not OTHER:
         OTHER = [measurement, 0, 0, 0, 1]    
     
@@ -82,6 +82,7 @@ def estimate_next_pos(measurement, OTHER = None):
     avg_distance = (local_distance + OTHER[3] * n) / (n + 1)
     heading = atan2(measurement[1] - OTHER[0][1], measurement[0] - OTHER[0][0])
     local_turning = heading - OTHER[2]
+    local_turning = angle_trunc(local_turning)
     avg_turning = (local_turning + OTHER[2] * n) / (n + 1)
     OTHER = [measurement, heading, avg_turning, avg_distance, n+1]
 
