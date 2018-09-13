@@ -62,7 +62,7 @@ def next_move(hunter_position, hunter_heading, target_measurement, max_distance,
     guess_robot = robot(target_measurement[0], target_measurement[1], heading, avg_turning, avg_distance)
     
     xy_estimate_list = []
-    min_chase_distance = 1000
+    min_chase_distance = 1000000
     min_index = 0
     for i in range(6):
         guess_robot.move(guess_robot.turning, guess_robot.distance)
